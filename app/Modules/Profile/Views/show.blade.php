@@ -1,8 +1,85 @@
 @extends('layout.default')
-@section('title', 'Dashboard')
+@section('title', 'User')
 @section('content')
 <div class="d-flex flex-column-fluid">
     <div class="container">
+        {{-- Profile Section --}}
+        <div class="card card-custom gutter-b">
+            <div class="card-body">
+                <div class="d-flex mb-9">
+                    {{-- Begin Pic --}}
+                    <div class="flex-shrink-0 mr-7 mt-lg-0 mt-3">
+                        <div class="symbol symbol-50 symbol-lg-120">
+                            @if($user->profile_image != NULL)
+                                <img src="{{ asset('media/users/300_1.jpg') }}" alt="image">
+                            @else
+                                <span class="symbol-label font-size-h1">{{ substr($user->first_name,0,1) }}</span>
+                            @endif
+                        </div>
+                        <div class="symbol symbol-50 symbol-lg-120 symbol-primary d-none">
+                            <span class="font-size-h3 symbol-label font-weight-boldest">{{ substr($user->first_name,0,1) }}{{ substr($user->last_name,0,1) }}</span>
+                        </div>
+                    </div>
+                    {{-- End of Pic --}}
+                    {{-- Begin info --}}
+                    <div class="flex-grow-1">
+                        <!--begin::Title-->
+                        <div class="d-flex justify-content-between flex-wrap mt-1">
+                            <div class="d-flex mr-3">
+                                <a href="{{ route('profile.index') }}" class="text-dark-75 text-hover-primary font-size-h5 font-weight-bold mr-3">{{ $user->first_name }} {{ $user->last_name }}</a>
+                                <a href="#">
+                                    <i class="flaticon2-correct text-success font-size-h5"></i>
+                                </a>
+                            </div>
+                            <div class="my-lg-0 my-3">
+                                <a href="{{ route('profile.settings', encrypt($user->id)) }}" class="btn btn-sm btn-light-success font-weight-bolder text-uppercase mr-3">Settings</a>
+                            </div>
+                        </div>
+                        <!--end::Title-->
+                        <!--begin::Content-->
+                        <div class="d-flex flex-wrap justify-content-between mt-1">
+                            <div class="d-flex flex-column flex-grow-1 pr-8">
+                                <div class="d-flex flex-wrap mb-4">
+                                    <a href="#" class="text-dark-50 text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
+                                    <i class="flaticon2-new-email mr-2 font-size-lg"></i>{{ $user->email }}</a>
+                                </div>
+                                <span class="font-weight-bold text-dark-50">
+                                    @if(! empty($user->bio))
+                                        {{ $user->bio }}
+                                    @else
+                                        Your Bio
+                                    @endif
+                                </span>
+                            </div>
+                            
+                            
+                            <div class="d-flex align-items-center w-25 flex-lg-fill float-right mt-lg-12 mt-8">
+                                <div class="d-flex align-items-center flex-lg-fill mr-5 mb-2">
+                                    <span class="mr-4">
+                                        <i class="flaticon-edit display-4 text-muted font-weight-bold"></i>
+                                    </span>
+                                    <div class="d-flex flex-column text-dark-75">
+                                        <span class="font-weight-bolder font-size-sm">Posts</span>
+                                        <span class="font-weight-bolder font-size-h5">{{ count($user->posts) }}</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center flex-lg-fill mr-5 mb-2">
+                                    <span class="mr-4">
+                                        <i class="flaticon-users display-4 text-muted font-weight-bold"></i>
+                                    </span>
+                                    <div class="d-flex flex-column text-dark-75">
+                                        <span class="font-weight-bolder font-size-sm">Connection</span>
+                                        <span class="font-weight-bolder font-size-h5">{{ count($user->connections) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end::Content-->
+                    </div>
+                    {{-- End of info --}}
+                </div>
+            </div>
+        </div>
         {{-- End Of Profile Section --}}
         <div class="row">
             {{-- Post Section --}}
@@ -11,7 +88,7 @@
                     <form method="POST" action="{{ route('post.store') }}" id="create-post" enctype="multipart/form-data">
                         <div class="card-body">
                             <div class="form-group">
-                                <textarea class="form-control" name="post_caption" id="caption" cols="30" rows="5" placeholder="What's your thought?"></textarea>
+                                <textarea class="form-control" name="post_caption" id="caption" cols="30" rows="5" placeholder="Say hi?"></textarea>
                             </div>
                         </div>
                         <div class="card-footer">
@@ -40,13 +117,13 @@
                                     <div class="d-flex align-items-center my-2">
                                         <div class="d-flex align-items-center">
                                             <div class="symbol symbol-35 mr-3">
-                                                @if(Auth::user()->profile_picture != NULL)
-                                                    <div class="symbol-label" style="background-image: url('media/users/{{ Auth::user()->profile_picture }}')"></div>
+                                                @if($user->profile_picture != NULL)
+                                                    <div class="symbol-label" style="background-image: url('media/users/{{ $user->profile_picture }}')"></div>
                                                 @else
-                                                    <div class="symbol-label font-size-h3">{{ substr(Auth::user()->first_name,0,1) }}</div>
+                                                    <div class="symbol-label font-size-h3">{{ substr($user->first_name,0,1) }}</div>
                                                 @endif
                                             </div>
-                                            <a href="#" class="text-dark-75 font-size-lg text-hover-primary font-weight-bolder">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</a>
+                                            <a href="#" class="text-dark-75 font-size-lg text-hover-primary font-weight-bolder">{{ $user->first_name }} {{ $user->last_name }}</a>
                                             <span class="ml-3 text-muted">{{ Carbon\Carbon::parse($post->created_at)->diffForHumans() }}</span>
                                         </div>
                                     </div>
@@ -65,12 +142,8 @@
                                     <div class="d-flex flex-row justify-content-between pl-4 pr-3 pt-3 pb-1 mb-5">
                                         <ul class="list-inline d-flex flex-row align-items-center m-0">
                                             <li class="list-inline-item">
-                                                <button type="button" class="btn p-0 btn-likes" title="Like this post" data-post-id="{{ $post->id }}">
-                                                    @if(in_array(Auth::user()->id, array_column($post->postLikes->toArray(), 'user_id')))
-                                                        <i class="flaticon-like" style="color: #0f7aff"></i>
-                                                    @else
-                                                        <i class="flaticon-like"></i>
-                                                    @endif
+                                                <button class="btn p-0" title="Like this post">
+                                                    <i class="flaticon-like"></i>
                                                 </button>
                                                 {{ (count($post->postLikes) > 0 ? count($post->postLikes) : '') }}
                                             </li>
@@ -118,10 +191,10 @@
                                             <div class="d-flex align-items-start card-spacer-x py-4">
                                                 <!--begin::User Photo-->
                                                 <span class="symbol symbol-35 mr-3 mt-1">
-                                                    @if(Auth::user()->profile_picture != NULL)
-                                                        <div class="symbol-label" style="background-image: url('media/users/{{ Auth::user()->profile_picture }}')"></div>
+                                                    @if($user->profile_picture != NULL)
+                                                        <div class="symbol-label" style="background-image: url('media/users/{{ $user->profile_picture }}')"></div>
                                                     @else
-                                                        <div class="symbol-label font-size-h3">{{ substr(Auth::user()->first_name,0,1) }}</div>
+                                                        <div class="symbol-label font-size-h3">{{ substr($user->first_name,0,1) }}</div>
                                                     @endif
                                                 </span>
                                                 <!--end::User Photo-->
@@ -147,7 +220,7 @@
                 </div>
             </div>
             <div class="col-4">
-                <div class="card card-custom gutter-b">
+                {{-- <div class="card card-custom gutter-b">
                     <div class="card-header">
                         <h4 class="card-title font-weight-bold">Suggestions</h4>
                     </div>
@@ -177,14 +250,16 @@
                             
                         @endforeach
                     </div>
-                </div>
+                </div> --}}
             </div>
             {{-- End of Post Section --}}
+        </div>
     </div>
 </div>
 @endsection
 {{-- Styles Section --}}
 @section('styles')
+    <!-- the fileinput plugin styling CSS file -->
     <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.2.2/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
 @endsection
 
@@ -196,9 +271,7 @@
     <!-- the main fileinput plugin script JS file -->
     <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.2.2/js/fileinput.min.js"></script>
 
-    {{-- page scripts --}}
-    <script type="text/javascript">
-
+    <script>
         $(document).ready(function() {
             $('#images').fileinput({
                 showCaption: false,
@@ -228,7 +301,7 @@
                                 timer: 1500
                             })
                                 .then(() => {
-                                    window.location.href = '{{ route("dashboard.index") }}';
+                                    window.location.href = '{{ route("profile.index") }}';
                                 })
                         } else {
                             basicAlert(
@@ -259,40 +332,7 @@
                                 timer: 1500
                             })
                                 .then(() => {
-                                    window.location.href = '{{ route("dashboard.index") }}';
-                                })
-                        } else {
-                            basicAlert(
-                                'An Error Occured!',
-                                response.error,
-                                'error',
-                                'Ok'
-                            )
-                        }
-                    }
-                })
-            })
-
-            $('.btn-likes').click(function(e) {
-                e.preventDefault()
-                let postId = $(this).attr('data-post-id')
-                let url = '{{ url("post/like") }}/' + postId
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        if(response.status === 'success') {
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                icon: 'success',
-                                title: response.msg,
-                                timer: 1500
-                            })
-                                .then(() => {
-                                    window.location.href = '{{ route("dashboard.index") }}';
+                                    window.location.href = '{{ route("profile.index") }}';
                                 })
                         } else {
                             basicAlert(

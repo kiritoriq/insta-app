@@ -20,7 +20,7 @@
                 @if(config('layout.aside.self.display') == false)
                     <div class="header-logo">
                         <a href="{{ url('/') }}">
-                            <img alt="Logo" src="{{ asset('media/logos/'.$kt_logo_image) }}"/>
+                           <img src="https://preview.keenthemes.com/metronic/theme/html/demo1/dist/assets/media/logos/logo-light.png" alt="Logo">
                         </a>
                     </div>
                 @endif

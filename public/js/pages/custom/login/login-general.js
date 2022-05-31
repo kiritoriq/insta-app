@@ -123,7 +123,7 @@ var KTLogin = function () {
         username: {
           validators: {
             notEmpty: {
-              message: 'Username cannot be empty'
+              message: 'Email cannot be empty'
             }
           }
         },

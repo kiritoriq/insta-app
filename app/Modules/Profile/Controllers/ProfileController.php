@@ -1,23 +1,15 @@
 <?php
 
-namespace App\Modules\Home\Controllers;
+namespace App\Modules\Profile\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 
-class HomeController extends Controller
+class ProfileController extends Controller
 {
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('auth');
@@ -30,18 +22,16 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $arr_con = Session::get('connections');
-        array_push($arr_con, Auth::user()->id);
         $posts = Post::with('postImages', 'postLikes', 'postComments.user')
-            ->whereIn('user_id', $arr_con)
+            ->where('user_id', Auth::user()->id)
             ->orderBy('created_at', 'desc')
             ->get();
         $suggestions = User::where('is_active', 1)
-            ->whereNotIn('id', $arr_con)
+            ->whereNotIn('id', [Auth::user()->id])
             ->take(10)
             ->get();
 
-        return view("Home::index", [
+        return view("Profile::index", [
             'posts' => $posts,
             'suggestions' => $suggestions
         ]);
@@ -76,7 +66,20 @@ class HomeController extends Controller
      */
     public function show($id)
     {
-        //
+        $id = decrypt($id);
+        $user = User::with('role', 'posts', 'connections')
+            ->where('id', $id)
+            ->first();
+        
+        $posts = Post::with('postImages', 'postLikes', 'postComments.user')
+            ->where('user_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view("Profile::show", [
+            'user' => $user,
+            'posts' => $posts,
+        ]);
     }
 
     /**
@@ -111,10 +114,5 @@ class HomeController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function getPageAduan(Request $request) {
-        // dd($request);
-        return view('Home::modal_grafik');
     }
 }

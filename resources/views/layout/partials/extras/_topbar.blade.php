@@ -100,9 +100,9 @@
             <div class="topbar-item">
                 <div class="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle">
                     <span class="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">Hi,</span>
-                    <span class="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3"> {{ Auth::user()->username }}</span>
+                    <span class="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3"> {{ Auth::user()->first_name }}</span>
                     <span class="symbol symbol-35 symbol-light-success">
-                        <img alt="Pic" src="{{ Session::get('foto') }}"/>
+                        <img alt="Pic" src="{{ Auth::user()->profile_image }}"/>
                     </span>
                 </div>
             </div>
@@ -111,12 +111,12 @@
                 {{-- Toggle --}}
                 <div class="topbar-item" data-toggle="dropdown" data-offset="0px,0px">
                     <div class="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2 text-right">
-                        <span class="text-white font-weight-bolder font-size-base d-none d-md-inline mr-3">{{ Auth::user()->username }} <br /> <small>{{ Auth::user()->about }}</small></span>
+                        <span class="text-white font-weight-bolder font-size-base d-none d-md-inline mr-3">{{ Auth::user()->first_name }} <br /> <small>{{ Auth::user()->about }}</small></span>
                         <span class="symbol symbol-35 symbol-light-primary">
-							@if(Session::get('foto') != "")
-								<img alt="Pic" src="{{ Session::get('foto') }}"/>
+							@if(Auth::user()->profile_image != "")
+								<img alt="Pic" src="{{ Auth::user()->profile_image }}"/>
 							@else
-								<span class="symbol-label font-size-h5">{{ substr(Auth::user()->username,0,1) }}</span>
+								<span class="symbol-label font-size-h5">{{ substr(Auth::user()->first_name,0,1) }}</span>
 							@endif
                         </span>
                     </div>

@@ -19,12 +19,12 @@
                 @if(Session::get('foto') != "")
 					<img alt="Pic" src="{{ Session::get('foto') }}"/>
 				@else
-					<span class="symbol-label font-size-h5">{{ substr(Auth::user()->username,0,1) }}</span>
+					<span class="symbol-label font-size-h5">{{ substr(Auth::user()->first_name,0,1) }}</span>
 				@endif
             </div>
 
             {{-- Text --}}
-            <div class="m-0 flex-grow-1 mr-3 font-size-h5">{{ Auth::user()->username }}</div>
+            <div class="m-0 flex-grow-1 mr-3 font-size-h5">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</div>
         </div>
     </div>
 @endif
@@ -32,7 +32,7 @@
 {{-- Nav --}}
 <div class="navi navi-spacer-x-0 pt-5">
     {{-- Item --}}
-    <a href="#" class="navi-item px-8">
+    <a href="{{ route('profile.index') }}" class="navi-item px-8">
         <div class="navi-link">
             <div class="navi-icon mr-2">
                 <i class="flaticon2-calendar-3 text-success"></i>

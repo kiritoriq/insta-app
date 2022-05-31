@@ -26,9 +26,17 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $user = User::with(['roles.role'])->orderBy('id', 'asc')->get();
+        $user = User::with('role')
+            ->when(isset($request->search), function($q) use ($request) {
+                $q->where('first_name', 'like', '%'. $request->search .'%');
+                $q->orWhere('last_name', 'like', '%'. $request->search .'%');
+                $q->orWhere('email', 'like', '%'. $request->search .'%');
+            })
+            ->orderBy('id', 'asc')
+            ->paginate(20);
+            
         return view("Users::index",['users' => $user]);
     }
 
@@ -108,7 +116,7 @@ class UsersController extends Controller
     public function getEdit($id)
     {
         $role = Roles::orderBy('id', 'asc')->get();
-        $data = User::with(['roles.role'])->where('id', '=', $id)->first();
+        $data = User::with('role')->where('id', '=', $id)->first();
         // dd($data->roles[0]->role_id);
         return view('Users::edit', ['data' => $data, 'roles' => $role]);
     }

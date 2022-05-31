@@ -93,9 +93,14 @@ class LoginController extends Controller
             Session::put('name', Auth::user()->username);
             Session::put('user_id', Auth::user()->id);
             Session::put('role_id', Auth::user()->role_id);
+            $arr_con = array();
+            foreach(Auth::user()->connections as $index => $con) {
+                array_push($arr_con, $con->relation_id);
+            }
+            Session::put('connections', $arr_con);
             return response()->json([
                 'status' => 'success',
-                'msg' => 'Berhasil login. Selamat datang ' . Auth::user()->name
+                'msg' => 'Login success. Welcome ' . Auth::user()->name
             ]);
         } else {
             $response = array(

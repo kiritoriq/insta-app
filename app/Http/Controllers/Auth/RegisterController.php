@@ -53,42 +53,62 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'username' => ['required', 'string', 'max:255'],
-            // 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-    }
-
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\User
-     */
-    protected function create(array $data)
-    {
-        return User::create([
-            'email' => $data['email'],
-            'username' => $data['username'],
-            'name' => $data['name'],
-            'password' => Hash::make($data['password']),
-            'is_active' => 1,
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'date_of_birth' => 'required',
+            'gender' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|confirmed|min:8'
         ]);
     }
 
     public function register(Request $request) {
         $validator = $this->validator($request->all());
+
         if($validator->fails()) {
-            return response()->json(['status' => 'failed', 'msg' => 'Please check your input again', 'errors' => $validator->errors()]);
-        } else {
-            $user_create = $this->create($request->all());
-            if($user_create) {
-                return response()->json(['status' => 'success', 'msg' => 'Data has ben saved']);
-            } else {
-                return response()->json(['status' => 'failed', 'msg' => 'Register cannot be complete!', 'errors' => $user_create]);
-            }
+            return response()->json([
+                'status' => 'failed',
+                'type' => 'validate',
+                'error' => ucwords(implode(', ', $validator->errors()->all()))
+            ]);
         }
+
+        $rules = ['captcha' => 'required|captcha'];
+        $cek_captcha = Validator::make($request->all(), $rules);
+        if ($cek_captcha->fails()) {
+            $response = array(
+                'status' => 'failed',
+                'type' => 'captcha',
+                'error' => 'Captcha Failed!',
+            );
+            
+            return response()->json($response);
+        }
+
+        $response = array(
+            'status' => 'failed',
+            'msg' => 'An error occured!'
+        );
+
+        $user = new User();
+        $user->first_name = $request->first_name;
+        $user->last_name = $request->last_name;
+        $user->role_id = 3;
+        $user->dob = date('Y-m-d', strtotime($request->date_of_birth));
+        $user->gender = $request->gender;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->is_active = 1;
+        
+        try {
+            $user->save();
+
+            $response['status'] = 'success';
+            $response['msg'] = 'Register complete!';
+        } catch(\Exception $e) {
+            $response['error'] = $e->getMessage();
+        }
+
+        return response()->json($response);
     }
 }

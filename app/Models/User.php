@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Post;
+use App\Models\UsersConnection;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Keygen\Keygen;
@@ -72,6 +74,16 @@ class User extends Authenticatable
 
     public function role() {
         return $this->belongsTo(Roles::class, 'role_id');
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'user_id', 'id');
+    }
+
+    public function connections()
+    {
+        return $this->hasMany(UsersConnection::class, 'user_id', 'id');
     }
 
 }

@@ -15,7 +15,7 @@
                 <div class="login-signin">
                     <div class="mb-20">
                         <h3>Insta App</h3>
-                        <div class="text-muted font-weight-bold">Masukkan Email dan password untuk masuk ke aplikasi</div>
+                        <div class="text-muted font-weight-bold">Type your email and password to sign in!</div>
                     </div>
                     <form class="form" method="post" action="{{ route('login') }}" novalidate="novalidate" id="kt_login_signin_form">
                         @csrf
@@ -53,7 +53,7 @@
                         </div>
                         {{-- Captcha --}}
                         <button type="submit" id="btnLogin" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4">
-                            <span>Log in</span>
+                            <span>Sign in</span>
                             <span class="svg-icon svg-icon-white svg-icon-2x"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo1/dist/../src/media/svg/icons/Navigation/Angle-double-right.svg-->
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -65,6 +65,10 @@
                             </span>
                         </button>
                     </form>
+                    <div class="mt-10">
+                        <span class="opacity-70 mr-4">Don't have an account yet?</span>
+                        <a href="{{ route('register') }}" id="kt_login_signup" class="text-muted text-hover-primary font-weight-bold">Sign Up!</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -90,14 +94,6 @@
                     type: 'get',
                     success: function(response) {
                         $('#captchaCode').attr('src', response);
-                        // $.ajax({
-                        //     url: response,
-                        //     type: 'get',
-                        //     success: function(response) {
-                        //         // console.log(response);
-                        //         $('#captchaCode').attr('src');
-                        //     }
-                        // })
                     } 
                 })
             })

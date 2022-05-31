@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,21 @@ Route::get('/', function () {
 Route::post('login/auth', [LoginController::class, 'auth'])->name('login.auth');
 Route::post('login/action', [LoginController::class, 'login_action'])->name('login.login_action');
 Route::get('/reload-captcha', [LoginController::class, 'recaptcha'])->name('login.recaptcha');
+
+Route::group([
+    'middleware' => ['web', 'auth'],
+    'prefix' => 'post',
+    'as' => 'post.'
+], function() {
+    Route::get('', [PostController::class, 'allPost'])->name('all');
+    Route::get('/{user_id}', [PostController::class, 'postByUser'])->name('user-post');
+    Route::post('', [PostController::class, 'post'])->name('store');
+    Route::get('/{post_id}', [PostController::class, 'edit'])->name('edit');
+    Route::put('', [PostController::class, 'update'])->name('update');
+    Route::delete('/{post_id}', [PostController::class, 'destroy'])->name('delete');
+    Route::post('/comment/{post_id}', [PostController::class, 'postComment'])->name('comment');
+    Route::post('/like/{post_id}', [PostController::class, 'postLike'])->name('likes');
+});
 
 
 // Demo routes

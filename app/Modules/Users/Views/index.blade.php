@@ -70,30 +70,23 @@
                             <table class="table table-bordered table-hover datatable-init" id="table-user">
                                 <thead>
                                     <tr>
-                                        <th width="5%">No</th>
-                                        <th>Username / Nama</th>
+                                        <th>Fullname</th>
+                                        <th>Email</th>
+                                        <th>Gender</th>
+                                        <th>Date Of Birth</th>
                                         <th>Role</th>
-                                        <th class="text-center">Aksi</th>
+                                        <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
-                                <tfoot>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Username / Nama</th>
-                                        <th>Role</th>
-                                        <th class="text-center">Aksi</th>
-                                    </tr>
-                                </tfoot>
                                 <tbody>
-                                    @foreach($users as $key => $user)
+                                    @foreach($users as $index => $user)
                                     <tr>
-                                        <td class="text-center">{{ ++$key }}</td>
-                                        <td>{{ $user->username }}</td>
+                                        <td>{{ $user->first_name }} {{ $user->last_name }}</td>
+                                        <td>{{ $user->email }}</td>
+                                        <td>{{ ($user->gender == 'M' ? 'Male' : ($user->gender == 'F' ? 'Female' : 'N/A')) }}</td>
+                                        <td>{{ date('d F Y', strtotime($user->dob)) }}</td>
                                         <td class="text-center align-middle">
-                                            @foreach($user->roles as $role) 
-                                                <span class="label label-lg font-weight-bold label-light-primary label-inline mr-3">{{ $role->role->roles }}</span>
-                                            @endforeach
-                                            {{-- <span class="label label-lg font-weight-bold label-light-primary label-inline">{{ $user->privilege }}</span> --}}
+                                            <span class="label label-lg font-weight-bold label-light-primary label-inline mr-3">{{ $user->role->roles }}</span>
                                         </td>
                                         <td class="text-center" width="20%">
                                             <button type="button" class="btn btn-sm btn-clean btn-icon" data-fancybox data-type="ajax" data-src="{{ route('users.edit', $user->id) }}" data-toggle="tooltip" data-theme="dark" title="Edit User">
@@ -109,6 +102,11 @@
                             </table>
                         </div>
                     </div>
+                    <div class="card-footer">
+                        <div style="float: right">
+                            {{ $users->links() }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -117,16 +115,16 @@
 @endsection
 {{-- Styles Section --}}
 @section('styles')
-    <link href="{{ asset('plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/>
+    {{-- <link href="{{ asset('plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css"/> --}}
 @endsection
 
 {{-- Scripts Section --}}
 @section('scripts')
     {{-- vendors --}}
-    <script src="{{ asset('plugins/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script>
+    {{-- <script src="{{ asset('plugins/custom/datatables/datatables.bundle.js') }}" type="text/javascript"></script> --}}
 
     {{-- page scripts --}}
-    <script src="{{ asset('js/pages/User.js') }}" type="text/javascript"></script>
+    {{-- <script src="{{ asset('js/pages/User.js') }}" type="text/javascript"></script> --}}
     <script>
         $(document).ready(function() {
             $('#table-user .hapus-user').click(function(e) {
@@ -134,8 +132,8 @@
                 var id = $(this).attr('data-user')
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Apakah anda yakin akan menghapus data ini?',
-                    text: 'Setelah dihapus, data tidak dapat dikembalikan',
+                    title: 'Are you sure want to delete this data?',
+                    text: 'After deleted, data cannot be restore.',
                     showConfirmButton: true,
                     confirmButtonText: 'Yakin',
                     showCancelButton: true,
