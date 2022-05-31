@@ -1,0 +1,14 @@
+/node_modules
+/storage/*.key
+/vendor
+.rnd
+.env
+.env.backup
+.phpunit.result.cache
+.php_cs.cache
+Homestead.json
+composer.lock
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+mix-manifest.json
