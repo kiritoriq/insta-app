@@ -1,5 +1,5 @@
 @extends('layout.default')
-@section('title', 'User')
+@section('title', 'Profile Page ' . $user->first_name)
 @section('content')
 <div class="d-flex flex-column-fluid">
     <div class="container">
@@ -32,7 +32,7 @@
                                 </a>
                             </div>
                             <div class="my-lg-0 my-3">
-                                <a href="{{ route('profile.settings', encrypt($user->id)) }}" class="btn btn-sm btn-light-success font-weight-bolder text-uppercase mr-3">Settings</a>
+                                <a href="{{ route('profile.follow', encrypt($user->id)) }}" class="btn btn-sm btn-light-primary font-weight-bolder text-uppercase mr-3">Follow</a>
                             </div>
                         </div>
                         <!--end::Title-->
@@ -47,7 +47,7 @@
                                     @if(! empty($user->bio))
                                         {{ $user->bio }}
                                     @else
-                                        Your Bio
+                                        Their Bio
                                     @endif
                                 </span>
                             </div>
@@ -108,7 +108,7 @@
                 </div>
                 <div class="d-flex flex-column mt-4 mb-4">
                     @if(count($posts) == 0)
-                        You didn't post anything yet
+                        They didn't post anything yet
                     @else
                         @foreach($posts as $index => $post)
                             <div class="card">
