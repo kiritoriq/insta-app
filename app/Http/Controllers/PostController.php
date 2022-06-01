@@ -35,7 +35,7 @@ class PostController extends Controller
             $post_id = Post::insertGetId([
                 'user_id' => Auth::user()->id,
                 'caption' => $request->post_caption,
-                'created_at' => date('Y-m-d')
+                'created_at' => date('Y-m-d H:i:s')
             ]);
 
             if($request->has('images')) {
