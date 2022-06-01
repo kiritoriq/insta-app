@@ -32,7 +32,7 @@ class HomeController extends Controller
     {
         $arr_con = Session::get('connections');
         array_push($arr_con, Auth::user()->id);
-        $posts = Post::with('postImages', 'postLikes', 'postComments.user')
+        $posts = Post::with('postImages', 'postLikes', 'postComments.user', 'user')
             ->whereIn('user_id', $arr_con)
             ->orderBy('created_at', 'desc')
             ->get();

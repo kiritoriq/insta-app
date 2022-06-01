@@ -41,13 +41,13 @@
                                     <div class="d-flex align-items-center my-2">
                                         <div class="d-flex align-items-center">
                                             <div class="symbol symbol-35 mr-3">
-                                                @if(Auth::user()->profile_picture != NULL)
-                                                    <div class="symbol-label" style="background-image: url('media/users/{{ Auth::user()->profile_picture }}')"></div>
+                                                @if($post->user->profile_picture != NULL)
+                                                    <div class="symbol-label" style="background-image: url('media/users/{{ $post->user->profile_picture }}')"></div>
                                                 @else
-                                                    <div class="symbol-label font-size-h3">{{ substr(Auth::user()->first_name,0,1) }}</div>
+                                                    <div class="symbol-label font-size-h3">{{ substr($post->user->first_name,0,1) }}</div>
                                                 @endif
                                             </div>
-                                            <a href="#" class="text-dark-75 font-size-lg text-hover-primary font-weight-bolder">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</a>
+                                            <a href="#" class="text-dark-75 font-size-lg text-hover-primary font-weight-bolder">{{ $post->user->first_name }} {{ $post->user->last_name }}</a>
                                             <span class="ml-3 text-muted">{{ Carbon\Carbon::parse($post->created_at)->diffForHumans() }}</span>
                                         </div>
                                     </div>
@@ -273,6 +273,36 @@
                                 'Ok'
                             )
                         }
+                    }
+                })
+            })
+
+            $('.btnFollow').click(function(e) {
+                e.preventDefault()
+                $.ajax({
+                    url: $(this).attr('data-href'),
+                    type: 'POST',
+                    success: function(response) {
+                        if(response.status === 'success') {
+                                Swal.fire({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    icon: 'success',
+                                    title: response.msg,
+                                    timer: 1500
+                                })
+                                    .then(() => {
+                                        window.location.reload();
+                                    })
+                            } else {
+                                basicAlert(
+                                    'An Error Occured!',
+                                    response.error,
+                                    'error',
+                                    'Ok'
+                                )
+                            }
                     }
                 })
             })
