@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\UsersConnection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class ProfileController extends Controller
 {
@@ -114,5 +117,37 @@ class ProfileController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function profileFollow($relation_id)
+    {
+        $relation_id = decrypt($relation_id);
+        $response = array(
+            'status' => 'failed',
+            'msg' => 'An error occured!'
+        );
+
+        DB::beginTransaction();
+        try {
+            UsersConnection::create([
+                'user_id' => Auth::user()->id,
+                'relation_id' => $relation_id,
+                'created_at' => date('Y-m-d H:i:s')
+            ]);
+            
+            DB::commit();
+            $arr_con = array();
+            foreach(Auth::user()->connections as $index => $con) {
+                array_push($arr_con, $con->relation_id);
+            }
+            Session::put('connections', $arr_con);
+            $response['status'] = 'success';
+            $response['msg'] = 'You have follow this person!';
+        } catch(\Exception $e) {
+            DB::rollBack();
+            $response['error'] = $e->getMessage();
+        }
+
+        return response()->json($response);
     }
 }

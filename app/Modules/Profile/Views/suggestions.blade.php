@@ -29,9 +29,39 @@
         @endforeach
     </div>
 </div>
-
-<script>
-    $(document).ready(function() {
-
-    })
-</script>
+{{-- Scripts Section --}}
+@stack('scripts')
+    <script>
+        $(document).ready(function() {
+            $('.btnFollow').click(function(e) {
+                e.preventDefault()
+                $.ajax({
+                    url: $(this).attr('data-href'),
+                    type: 'POST',
+                    success: function(response) {
+                        if(response.status === 'success') {
+                                Swal.fire({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    icon: 'success',
+                                    title: response.msg,
+                                    timer: 1500
+                                })
+                                    .then(() => {
+                                        window.location.reload();
+                                    })
+                            } else {
+                                basicAlert(
+                                    'An Error Occured!',
+                                    response.error,
+                                    'error',
+                                    'Ok'
+                                )
+                            }
+                    }
+                })
+            })
+        })
+    </script>
+@endstack
